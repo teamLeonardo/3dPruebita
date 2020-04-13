@@ -3,22 +3,38 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { Canvas, extend, useThree, useFrame } from "react-three-fiber";
+import {
+  Canvas,
+  extend,
+  useThree,
+  useFrame,
+  useLoader
+} from "react-three-fiber";
 import { useSpring, a } from "react-spring/three";
 
 extend({ OrbitControls });
-
+const move = {
+  mover: {
+    move01: [
+      [0, 0, 0],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0]
+    ]
+  }
+};
 const SpaceShip = () => {
   const [model, setModel] = useState();
 
   useEffect(() => {
-    //new FBXLoader().load("/modelos3D/led.fbx", setModel);
-    new GLTFLoader().load("/modelos3D/led_rojo.glb", setModel);
+    new GLTFLoader().load("/modelos3D/playbot.glb", setModel);
   });
-  //console.log(model);
+
   return model ? <primitive object={model.scene} /> : null;
 };
-
 const Controls = () => {
   const orbitRef = useRef();
   const { camera, gl } = useThree();
@@ -29,8 +45,8 @@ const Controls = () => {
 
   return (
     <orbitControls
-      maxPolarAngle={Math.PI / 3}
-      minPolarAngle={Math.PI / 3}
+      // maxPolarAngle={Math.PI / 3}
+      // minPolarAngle={Math.PI / 3}
       args={[camera, gl.domElement]}
       ref={orbitRef}
     />
@@ -38,8 +54,8 @@ const Controls = () => {
 };
 
 const Plane = () => (
-  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
-    <planeBufferGeometry attach="geometry" args={[500, 500]} />
+  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+    <planeBufferGeometry attach="geometry" args={[20, 20]} />
     <meshPhysicalMaterial
       attach="material"
       color={0x999999}
@@ -72,7 +88,6 @@ const Box = () => {
 
 export default () => {
   const isBrowser = typeof window !== "undefined";
-
   return (
     <>
       {isBrowser && (
@@ -86,12 +101,13 @@ export default () => {
           <fog attach="fog" args={["0xa0a0a0", 200, 1000]} />
           <Controls />
           {/* <Box /> */}
-          <Plane />
-          <mesh>
-            <ambientLight intensity={0.5} />
-            <spotLight position={[0, 200, 0]} />
-            <SpaceShip />
-          </mesh>
+
+          <ambientLight intensity={0.5} />
+
+          <spotLight position={[0, 10, 0]} />
+          <Plane position={[0, 0, 0]} />
+
+          <SpaceShip />
         </Canvas>
       )}
     </>
