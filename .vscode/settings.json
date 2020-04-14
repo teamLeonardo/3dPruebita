@@ -1,4 +1,5 @@
 {
   "workbench.colorTheme": "Atom One Dark",
-  "workbench.iconTheme": "vs-minimal"
+  "workbench.iconTheme": "vs-minimal",
+  "editor.insertSpaces": false
 }

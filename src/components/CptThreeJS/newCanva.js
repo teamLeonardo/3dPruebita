@@ -104,7 +104,7 @@ export default () => {
 
           <ambientLight intensity={0.5} />
 
-          <spotLight position={[0, 10, 0]} />
+          <spotLight position={[0, 20, 0]} />
           <Plane position={[0, 0, 0]} />
 
           <SpaceShip />
