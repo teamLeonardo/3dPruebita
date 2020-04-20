@@ -1,8 +1,9 @@
 {
-  "name": "cm3b0",
+  "name": "3dsimulador",
   "version": "1.0.0",
-  "description": null,
+  "description": "",
   "keywords": [
+    "react",
     "starter"
   ],
   "main": "src/index.js",

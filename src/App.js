@@ -26,7 +26,8 @@ export default function App(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [contPage, setContPage] = React.useState("");
-
+  const [led, setLed] = React.useState(false);
+  const [posi, setPosi] = React.useState(100);
   const changePage = async newPage => {
     await setPage(newPage);
   };
@@ -34,7 +35,15 @@ export default function App(props) {
     validarStade(".contenedor1").then(e => {
       setContPage(e);
     });
+
+    for (let index = 0; index < posi; index = index + 0.1) {
+      aumetarPosi(index);
+    }
   });
+
+  const aumetarPosi = async indice => {
+    await setPosi(indice);
+  };
   const validarStade = async buscar => {
     return await new Promise(resolve => {
       const intervalo = setInterval(() => {
@@ -54,6 +63,10 @@ export default function App(props) {
       e.value = contPage.innerHTML;
     });
   };
+  const changeLed = async e => {
+    const state = !led;
+    await setLed(state);
+  };
   return (
     <div className={"App " + classes.root}>
       <ScrollableTabsButtonForce
@@ -67,6 +80,7 @@ export default function App(props) {
           <h2>pagina 1</h2>
           <h2>pagina 1</h2>
           <h2>pagina 1</h2>
+          <button onClick={changeLed}>{led ? "apagar" : "encender"}</button>
         </div>
       </TabPanel>
       <TabPanel value={page} index={1}>
@@ -76,7 +90,7 @@ export default function App(props) {
         </div>
       </TabPanel>
       <TabPanel className={"simuladorPanel"} value={page} index={2}>
-        <MasterCanvas />
+        <MasterCanvas estado={led} posiX={posi} />
       </TabPanel>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -11,29 +11,57 @@ import {
   useLoader
 } from "react-three-fiber";
 import { useSpring, a } from "react-spring/three";
+import { Vector3, MeshStandardMaterial, Color } from "three";
 
 extend({ OrbitControls });
-const move = {
-  mover: {
-    move01: [
-      [0, 0, 0],
-      [1, 0, 0],
-      [2, 0, 0],
-      [3, 0, 0],
-      [4, 0, 0],
-      [5, 0, 0],
-      [6, 0, 0]
-    ]
-  }
+const velocidad = 0.05;
+const intervalo = 2000;
+const SpaceShip = props => {
+  const { nodes, materials, scene } = useLoader(
+    GLTFLoader,
+    "/modelos3D/playbot.glb"
+  );
+  return (
+    <group {...props} dispose={null}>
+      <group name="Plano">
+        <mesh
+          material={materials["Material.042"]}
+          geometry={nodes["Cube_003_0"]}
+        />
+      </group>
+    </group>
+  );
 };
-const SpaceShip = () => {
-  const [model, setModel] = useState();
 
+const SpaceShip2 = props => {
+  const gltf = useLoader(GLTFLoader, "/modelos3D/apagado.glb");
+  const [prendido, setPrendido] = useState(false);
   useEffect(() => {
-    new GLTFLoader().load("/modelos3D/playbot.glb", setModel);
+    setInterval(() => {
+      setPrendido(!prendido);
+    }, intervalo);
+  });
+  useFrame(() => {
+    if (prendido) {
+      gltf.scenes[0].children[0].material = new MeshStandardMaterial({
+        color: 0xf21919
+      });
+    } else {
+      gltf.scenes[0].children[0].material = new MeshStandardMaterial({
+        color: 0x222323
+      });
+    }
+
+    if (gltf.scene.position.x <= 10) {
+      gltf.scene.position.x += velocidad;
+    } else {
+      gltf.scene.position.x = 0;
+    }
   });
 
-  return model ? <primitive object={model.scene} /> : null;
+  return <primitive object={gltf.scene} dispose={null} />;
+
+  //return model ? <primitive object={model.scene} /> : null;
 };
 const Controls = () => {
   const orbitRef = useRef();
@@ -45,8 +73,8 @@ const Controls = () => {
 
   return (
     <orbitControls
-      // maxPolarAngle={Math.PI / 3}
-      // minPolarAngle={Math.PI / 3}
+      maxPolarAngle={Math.PI / 3}
+      minPolarAngle={Math.PI / 3}
       args={[camera, gl.domElement]}
       ref={orbitRef}
     />
@@ -86,15 +114,17 @@ const Box = () => {
   );
 };
 
-export default () => {
+export default ({ estado, posiX }) => {
   const isBrowser = typeof window !== "undefined";
+  const [state, setState] = useState(estado);
+  const [poseX, setPoseX] = useState(posiX);
   return (
     <>
       {isBrowser && (
         <Canvas
           camera={{ position: [0, 0, 10] }}
           onCreated={({ gl }) => {
-            gl.shadowMap.enabled = true;
+            // gl.shadowMap.enabled = true;
             gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
@@ -106,8 +136,15 @@ export default () => {
 
           <spotLight position={[0, 20, 0]} />
           <Plane position={[0, 0, 0]} />
-
-          <SpaceShip />
+          {state ? (
+            <Suspense fallback={null}>
+              <SpaceShip position={[poseX, 0, 0]} />
+            </Suspense>
+          ) : (
+            <Suspense fallback={null}>
+              <SpaceShip2 />
+            </Suspense>
+          )}
         </Canvas>
       )}
     </>
