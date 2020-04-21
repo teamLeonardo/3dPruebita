@@ -26,7 +26,7 @@ export default function App(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [contPage, setContPage] = React.useState("");
-  const [led, setLed] = React.useState(false);
+  const [led, setLed] = React.useState(0);
   const [posi, setPosi] = React.useState(100);
   const changePage = async newPage => {
     await setPage(newPage);
@@ -63,9 +63,9 @@ export default function App(props) {
       e.value = contPage.innerHTML;
     });
   };
-  const changeLed = async e => {
-    const state = !led;
-    await setLed(state);
+  const changeLed = e => {
+    let text = document.querySelector("#inputInterbal").value;
+    setLed(Number(text));
   };
   return (
     <div className={"App " + classes.root}>
@@ -77,7 +77,12 @@ export default function App(props) {
       <TabPanel value={page} index={0}>
         <div className={"contenedor1"}>
           <label for="leds"> off / on </label>
-          <input type="checkbox" id="leds" />
+          <input type="checkbox" id="leds" /> <br /> <br />
+          <label for="inputInterbal">interbalo</label>
+          <br />
+          <input type="text" id="inputInterbal" />
+          <br />
+          <button onClick={changeLed}>guardar</button>
         </div>
       </TabPanel>
       <TabPanel value={page} index={1}>
@@ -87,7 +92,7 @@ export default function App(props) {
         </div>
       </TabPanel>
       <TabPanel className={"simuladorPanel"} value={page} index={2}>
-        <MasterCanvas estado={led} posiX={posi} />
+        <MasterCanvas intervalo={led} />
       </TabPanel>
     </div>
   );

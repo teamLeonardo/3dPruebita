@@ -11,51 +11,35 @@ import {
   useLoader
 } from "react-three-fiber";
 import { useSpring, a } from "react-spring/three";
-import { Vector3, MeshStandardMaterial, Color } from "three";
+import { Vector3, MeshStandardMaterial, Color, Colors } from "three";
 
 extend({ OrbitControls });
-const velocidad = 0.05;
-const intervalo = 2000;
-const SpaceShip = props => {
-  const { nodes, materials, scene } = useLoader(
-    GLTFLoader,
-    "/modelos3D/playbot.glb"
-  );
-  return (
-    <group {...props} dispose={null}>
-      <group name="Plano">
-        <mesh
-          material={materials["Material.042"]}
-          geometry={nodes["Cube_003_0"]}
-        />
-      </group>
-    </group>
-  );
-};
 
 const SpaceShip2 = props => {
-  const gltf = useLoader(GLTFLoader, "/modelos3D/apagado.glb");
-  const [prendido, setPrendido] = useState(false);
-  useEffect(() => {
-    setInterval(() => {
-      setPrendido(!prendido);
-    }, intervalo);
-  });
-  useFrame(() => {
-    if (prendido) {
-      gltf.scenes[0].children[0].material = new MeshStandardMaterial({
-        color: 0xf21919
-      });
-    } else {
-      gltf.scenes[0].children[0].material = new MeshStandardMaterial({
-        color: 0x222323
-      });
-    }
+  const gltf = useLoader(GLTFLoader, "/modelos3D/playboardVs2.glb");
 
-    if (gltf.scene.position.x <= 10) {
-      gltf.scene.position.x += velocidad;
+  let Apagado = new MeshStandardMaterial({ color: new Color(0x404344) });
+
+  let contador = 0;
+  useFrame(() => {
+    contador++;
+    if (contador >= props.intervalo / 20 && contador <= props.intervalo / 10) {
+      gltf.scene.children[0].material = new MeshStandardMaterial({
+        color: new Color(0xea0000)
+      });
+      gltf.scene.children[1].material = new MeshStandardMaterial({
+        color: new Color(0xeae100)
+      });
+      gltf.scene.children[2].material = new MeshStandardMaterial({
+        color: new Color(0x20ea00)
+      });
     } else {
-      gltf.scene.position.x = 0;
+      gltf.scene.children[0].material = Apagado;
+      gltf.scene.children[1].material = Apagado;
+      gltf.scene.children[2].material = Apagado;
+    }
+    if (contador > props.intervalo / 10) {
+      contador = 0;
     }
   });
 
@@ -114,10 +98,9 @@ const Box = () => {
   );
 };
 
-export default ({ estado, posiX }) => {
+export default ({ intervalo }) => {
   const isBrowser = typeof window !== "undefined";
-  const [state, setState] = useState(estado);
-  const [poseX, setPoseX] = useState(posiX);
+
   return (
     <>
       {isBrowser && (
@@ -138,7 +121,7 @@ export default ({ estado, posiX }) => {
           <Plane position={[0, 0, 0]} />
 
           <Suspense fallback={null}>
-            {state ? <SpaceShip /> : <SpaceShip2 />}
+            <SpaceShip2 intervalo={intervalo} />
           </Suspense>
         </Canvas>
       )}
