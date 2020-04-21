@@ -136,15 +136,10 @@ export default ({ estado, posiX }) => {
 
           <spotLight position={[0, 20, 0]} />
           <Plane position={[0, 0, 0]} />
-          {state ? (
-            <Suspense fallback={null}>
-              <SpaceShip position={[poseX, 0, 0]} />
-            </Suspense>
-          ) : (
-            <Suspense fallback={null}>
-              <SpaceShip2 />
-            </Suspense>
-          )}
+
+          <Suspense fallback={null}>
+            {state ? <SpaceShip /> : <SpaceShip2 />}
+          </Suspense>
         </Canvas>
       )}
     </>

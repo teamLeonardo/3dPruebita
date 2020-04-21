@@ -76,11 +76,8 @@ export default function App(props) {
       />
       <TabPanel value={page} index={0}>
         <div className={"contenedor1"}>
-          <h2>pagina 1</h2>
-          <h2>pagina 1</h2>
-          <h2>pagina 1</h2>
-          <h2>pagina 1</h2>
-          <button onClick={changeLed}>{led ? "apagar" : "encender"}</button>
+          <label for="leds"> off / on </label>
+          <input type="checkbox" id="leds" />
         </div>
       </TabPanel>
       <TabPanel value={page} index={1}>
