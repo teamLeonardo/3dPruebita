@@ -1,11 +1,8 @@
 {
-  "name": "3dsimulador",
+  "name": "test3d01",
   "version": "1.0.0",
   "description": "",
-  "keywords": [
-    "react",
-    "starter"
-  ],
+  "keywords": [],
   "main": "src/index.js",
   "dependencies": {
     "@material-ui/core": "4.9.7",
