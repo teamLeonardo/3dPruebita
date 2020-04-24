@@ -26,7 +26,7 @@ export default function App(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [contPage, setContPage] = React.useState("");
-  const [led, setLed] = React.useState(0);
+  const [led, setLed] = React.useState({});
   const [posi, setPosi] = React.useState(100);
   const changePage = async newPage => {
     await setPage(newPage);
@@ -64,8 +64,15 @@ export default function App(props) {
     });
   };
   const changeLed = e => {
-    let text = document.querySelector("#inputInterbal").value;
-    setLed(Number(text));
+    let text1 = document.querySelector("#inputInterbal1").value;
+    let text2 = document.querySelector("#inputInterbal2").value;
+    let text3 = document.querySelector("#inputInterbal3").value;
+
+    setLed({
+      inter1: [0, Number(text1)],
+      inter2: [0, Number(text2)],
+      inter3: [0, Number(text3)]
+    });
   };
   return (
     <div className={"App " + classes.root}>
@@ -76,11 +83,30 @@ export default function App(props) {
       />
       <TabPanel value={page} index={0}>
         <div className={"contenedor1"}>
-          <label for="leds"> off / on </label>
-          <input type="checkbox" id="leds" /> <br /> <br />
-          <label for="inputInterbal">interbalo</label>
           <br />
-          <input type="text" id="inputInterbal" />
+          <label for="inputInterbal1">pin 1</label>
+          <br />
+          <input
+            type="text"
+            id="inputInterbal1"
+            placeholder="10 o 100 o 1000 >"
+          />
+          <br />
+          <label for="inputInterbal2">pin 2</label>
+          <br />
+          <input
+            type="text"
+            id="inputInterbal2"
+            placeholder="10 o 100 o 1000 >"
+          />
+          <br />
+          <label for="inputInterbal3">pin 3</label>
+          <br />
+          <input
+            type="text"
+            id="inputInterbal3"
+            placeholder="10 o 100 o 1000 >"
+          />
           <br />
           <button onClick={changeLed}>guardar</button>
         </div>

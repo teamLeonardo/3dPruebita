@@ -8,42 +8,39 @@ import {
   extend,
   useThree,
   useFrame,
-  useLoader
+  useLoader,
+  Dom
 } from "react-three-fiber";
 import { useSpring, a } from "react-spring/three";
 import { Vector3, MeshStandardMaterial, Color, Colors } from "three";
 
 extend({ OrbitControls });
+// const ad = useLoader(GLTFLoader, "/modelos3D/apagado.glb");
+
+const LedsGenera = porps => {
+  const led = useLoader(GLTFLoader, "/modelos3D/apagado.glb");
+  led.scene.position.y = 0;
+  return <primitive object={led.scene} {...porps} />;
+};
 
 const SpaceShip2 = props => {
-  const gltf = useLoader(GLTFLoader, "/modelos3D/playboardVs2.glb");
-
-  let Apagado = new MeshStandardMaterial({ color: new Color(0x404344) });
-
-  let contador = 0;
-  useFrame(() => {
-    contador++;
-    if (contador >= props.intervalo / 20 && contador <= props.intervalo / 10) {
-      gltf.scene.children[0].material = new MeshStandardMaterial({
-        color: new Color(0xea0000)
-      });
-      gltf.scene.children[1].material = new MeshStandardMaterial({
-        color: new Color(0xeae100)
-      });
-      gltf.scene.children[2].material = new MeshStandardMaterial({
-        color: new Color(0x20ea00)
-      });
-    } else {
-      gltf.scene.children[0].material = Apagado;
-      gltf.scene.children[1].material = Apagado;
-      gltf.scene.children[2].material = Apagado;
-    }
-    if (contador > props.intervalo / 10) {
-      contador = 0;
-    }
-  });
-
-  return <primitive object={gltf.scene} dispose={null} />;
+  const placa = useLoader(GLTFLoader, "/modelos3D/playboardVs2.glb");
+  placa.scene.children[0].visible = false;
+  placa.scene.position.y = 0;
+  let posi = placa.scene.children[0].position;
+  //console.log(placa);
+  return (
+    <>
+      <primitive
+        object={placa.scene}
+        position={[0, 0, 0]}
+        scale={[3, 3, 3]}
+        rotation={[0, -135, 0]}
+        dispose={null}
+      />
+      <LedsGenera position={[2, 0, 3]} />
+    </>
+  );
 
   //return model ? <primitive object={model.scene} /> : null;
 };
@@ -76,33 +73,20 @@ const Plane = () => (
   </mesh>
 );
 
-const Box = () => {
-  const [hovered, setHovered] = useState(false);
-  const [active, setActive] = useState(false);
-  const props = useSpring({
-    scale: active ? [1.5, 1.5, 1.5] : [1, 1, 1],
-    color: hovered ? "hotpink" : "gray"
-  });
-
-  return (
-    <a.mesh
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      onClick={() => setActive(!active)}
-      scale={props.scale}
-      castShadow
-    >
-      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
-      <a.meshPhysicalMaterial attach="material" color={props.color} />
-    </a.mesh>
-  );
-};
-
 export default ({ intervalo }) => {
   const isBrowser = typeof window !== "undefined";
-
+  const [render, setRender] = useState(false);
+  const limpiarRender = () => {};
+  const changeStateRender = async () => {
+    await setRender(!render);
+  };
   return (
     <>
+      <div>
+        <button className={"btn-play-render"} onClick={changeStateRender}>
+          {render ? "apagar" : "play"}
+        </button>
+      </div>
       {isBrowser && (
         <Canvas
           camera={{ position: [0, 0, 10] }}
@@ -111,11 +95,11 @@ export default ({ intervalo }) => {
             gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <fog attach="fog" args={["0xa0a0a0", 200, 1000]} />
+          <fog attach="fog" args={[0xa0a0a0, 0, 30]} />
           <Controls />
           {/* <Box /> */}
 
-          <ambientLight intensity={0.5} />
+          <ambientLight intensity={1.5} />
 
           <spotLight position={[0, 20, 0]} />
           <Plane position={[0, 0, 0]} />
